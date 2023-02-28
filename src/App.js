@@ -1,6 +1,6 @@
 import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import Login from "./components/Login";
 import { useCookies } from "react-cookie";
