@@ -1,20 +1,58 @@
 import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import "./App.css";
+import Login from "./components/Login";
+import { useCookies } from "react-cookie";
 
 function App() {
     const [user, setUser] = useState(null);
     const [profile, setProfile] = useState(null);
-
+    const [, setCookies] = useCookies();
+    // console.log({ user, profile });
     const logOut = () => {
         googleLogout();
         setProfile(null);
     };
 
-    const login = useGoogleLogin({
-        onSuccess: codeResponse => setUser(codeResponse),
-        onError: error => console.log("Login Failed:", error),
+    const googleLogin = useGoogleLogin({
+        onSuccess: codeResponse => {
+            setUser(codeResponse);
+            handleLogin({ provider: "Google", OAuthToken: codeResponse.access_token });
+        },
+        onError: error => console.log("Google Login Failed:", error),
     });
+
+    const emailLogin = (email, password) => {
+        handleLogin({ email, password });
+    };
+
+    const handleLogin = async ({ email, password, provider, OAuthToken }) => {
+        try {
+            // const config = {
+            //     method: "post",
+            //     url: "http://localhost:6000/user/login",
+            //     headers: {
+            //         "Content-Type": "application/json",
+            //     },
+            //     data: JSON.stringify({
+            //         email,
+            //         password,
+            //         provider,
+            //         OAuthToken,
+            //     }),
+            // };
+            // const response = await axios(config);
+            axios
+                .post("http://localhost:6000/user/login", { email, password, provider, OAuthToken })
+                .then(res => {
+                    console.log({ res });
+                    setCookies("authToken", res.data.token);
+                });
+        } catch (error) {
+            console.log({ error });
+        }
+    };
 
     useEffect(() => {
         if (user) {
@@ -36,8 +74,8 @@ function App() {
     }, [user]);
 
     return (
-        <div>
-            <h2>React Google Login</h2>
+        <div className="App">
+            <h2>Task Planner</h2>
             <br />
             <br />
             {profile ? (
@@ -51,7 +89,7 @@ function App() {
                     <button onClick={logOut}>Log out</button>
                 </div>
             ) : (
-                <button onClick={() => login()}>Sign in with Google 🚀 </button>
+                <Login googleLogin={googleLogin} emailLogin={emailLogin} />
             )}
         </div>
     );
