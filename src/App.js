@@ -13,12 +13,13 @@ function App() {
     const logOut = () => {
         googleLogout();
         setProfile(null);
+        setCookies("authToken", "");
     };
 
     const googleLogin = useGoogleLogin({
         onSuccess: codeResponse => {
             setUser(codeResponse);
-            handleLogin({ provider: "Google", OAuthToken: codeResponse.access_token });
+            handleLogin({ googleAccessToken: codeResponse.access_token });
         },
         onError: error => console.log("Google Login Failed:", error),
     });
@@ -27,26 +28,13 @@ function App() {
         handleLogin({ email, password });
     };
 
-    const handleLogin = async ({ email, password, provider, OAuthToken }) => {
+    const handleLogin = async ({ email, password, googleAccessToken }) => {
         try {
-            // const config = {
-            //     method: "post",
-            //     url: "http://localhost:6000/user/login",
-            //     headers: {
-            //         "Content-Type": "application/json",
-            //     },
-            //     data: JSON.stringify({
-            //         email,
-            //         password,
-            //         provider,
-            //         OAuthToken,
-            //     }),
-            // };
-            // const response = await axios(config);
             axios
-                .post("http://localhost:6000/user/login", { email, password, provider, OAuthToken })
+                .post("http://localhost:8080/user/signin", { email, password, googleAccessToken })
                 .then(res => {
                     console.log({ res });
+                    setProfile(res.data.result);
                     setCookies("authToken", res.data.token);
                 });
         } catch (error) {
@@ -54,24 +42,19 @@ function App() {
         }
     };
 
-    useEffect(() => {
-        if (user) {
+    const handleSignUp = async (firstName, lastName, email, password) => {
+        try {
             axios
-                .get(
-                    `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${user.access_token}`,
-                            Accept: "application/json",
-                        },
-                    },
-                )
+                .post("http://localhost:8080/user/signup", { firstName, lastName, email, password })
                 .then(res => {
-                    setProfile(res.data);
-                })
-                .catch(err => console.log(err));
+                    console.log({ res });
+                    setProfile(res.data.result);
+                    setCookies("authToken", res.data.token);
+                });
+        } catch (error) {
+            console.log({ error });
         }
-    }, [user]);
+    };
 
     return (
         <div className="App">
@@ -80,16 +63,19 @@ function App() {
             <br />
             {profile ? (
                 <div>
-                    <img src={profile.picture} alt="user" />
                     <h3>User Logged in</h3>
-                    <p>Name: {profile.name}</p>
+                    <p>Name: {profile.firstName + " " + profile.lastName}</p>
                     <p>Email Address: {profile.email}</p>
                     <br />
                     <br />
                     <button onClick={logOut}>Log out</button>
                 </div>
             ) : (
-                <Login googleLogin={googleLogin} emailLogin={emailLogin} />
+                <Login
+                    googleLogin={googleLogin}
+                    emailLogin={emailLogin}
+                    emailSignUp={handleSignUp}
+                />
             )}
         </div>
     );
