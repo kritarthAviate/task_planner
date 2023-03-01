@@ -36,3 +36,8 @@
 .signupText {
     font-size: 14px;
 }
+
+.errorText {
+    font-size: 14px;
+    color: red;
+}
