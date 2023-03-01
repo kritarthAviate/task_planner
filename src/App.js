@@ -6,11 +6,24 @@ import Login from "./components/Login";
 import { useCookies } from "react-cookie";
 
 function App() {
-    const [user, setUser] = useState(null);
     const [profile, setProfile] = useState(null);
     const [, setCookies] = useCookies();
-    // console.log({ user, profile });
-    const logOut = () => {
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                axios.get("http://localhost:8080/user/me", { withCredentials: true }).then(res => {
+                    console.log({ res });
+                    setProfile(res.data.result);
+                });
+            } catch (error) {
+                console.log({ error });
+            }
+        };
+        checkAuth();
+    }, []);
+
+    const handleLogout = () => {
         googleLogout();
         setProfile(null);
         setCookies("authToken", "");
@@ -18,7 +31,6 @@ function App() {
 
     const googleLogin = useGoogleLogin({
         onSuccess: codeResponse => {
-            setUser(codeResponse);
             handleLogin({ googleAccessToken: codeResponse.access_token });
         },
         onError: error => console.log("Google Login Failed:", error),
@@ -68,7 +80,7 @@ function App() {
                     <p>Email Address: {profile.email}</p>
                     <br />
                     <br />
-                    <button onClick={logOut}>Log out</button>
+                    <button onClick={handleLogout}>Log out</button>
                 </div>
             ) : (
                 <Login
