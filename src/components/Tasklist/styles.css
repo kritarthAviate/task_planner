@@ -1,0 +1,47 @@
+.container {
+    margin: 80px 160px;
+}
+
+.tableTitle {
+    font-size: 20px;
+}
+
+.tableHeader {
+    display: flex;
+    gap: 80px;
+    font-size: 16px;
+    padding: 12px;
+    border: 1px solid lightgrey;
+}
+
+.rows {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    border: 1px solid lightgrey;
+    border-top: none;
+    padding: 20px 12px;
+    display: flex;
+    gap: 80px;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.button svg:hover {
+    cursor: pointer;
+    fill: aquamarine;
+}
+
+.button-disabled {
+    fill: lightgrey;
+}
+
+.delete-button svg:hover {
+    cursor: pointer;
+    fill: red;
+}

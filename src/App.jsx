@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import "./App.css";
 import Login from "./components/Login";
 import Navbar from "./components/Navbar";
+import Tasklist from "./components/Tasklist";
 
 function App() {
     const [profile, setProfile] = useState(null);
@@ -10,10 +10,10 @@ function App() {
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                axios.get("http://localhost:8080/user/me", { withCredentials: true }).then(res => {
-                    console.log({ res });
-                    setProfile(res.data.result);
+                const res = await axios.get("http://localhost:8080/user/me", {
+                    withCredentials: true,
                 });
+                setProfile(res.data.result);
             } catch (error) {
                 console.log({ error });
             }
@@ -24,7 +24,10 @@ function App() {
     return (
         <div className="App">
             {profile ? (
-                <Navbar profile={profile} setProfile={setProfile} />
+                <>
+                    <Navbar profile={profile} setProfile={setProfile} />
+                    <Tasklist />
+                </>
             ) : (
                 <>
                     <Login setProfile={setProfile} />
