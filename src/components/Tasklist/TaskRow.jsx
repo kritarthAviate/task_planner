@@ -1,22 +1,24 @@
 import React from "react";
 import { ArrowLeftIcon, ArrowRightIcon, DeleteIcon } from "../../icons";
 
-const TaskRow = ({ index, tasks, handleDeleteTask }) => {
+const TaskRow = ({ index, tasks, handleDeleteTask, handleRightIndent, handleLeftIndent }) => {
     const currentTask = tasks[index];
     const previousTask = tasks[index - 1];
-
+    const disableIndentRight =
+        currentTask.nestingValue - previousTask?.nestingValue >= 1 || index == 0;
+    const disableIndentLeft = currentTask.nestingValue == 0;
     return (
         <div className="row">
             <div className="actions">
-                <div className={currentTask.nestingValue == 0 ? "button-disabled" : "button"}>
+                <div
+                    className={disableIndentLeft ? "button-disabled" : "button"}
+                    onClick={() => !disableIndentLeft && handleLeftIndent(index)}
+                >
                     <ArrowLeftIcon size="18px" />
                 </div>
                 <div
-                    className={
-                        currentTask.nestingValue - previousTask?.nestingValue == 1
-                            ? "button-disabled"
-                            : "button"
-                    }
+                    className={disableIndentRight ? "button-disabled" : "button"}
+                    onClick={() => !disableIndentRight && handleRightIndent(index)}
                 >
                     <ArrowRightIcon size="18px" />
                 </div>
