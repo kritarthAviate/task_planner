@@ -1,0 +1,22 @@
+.navbarWrapper {
+    background-color: grey;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+}
+
+.appName {
+    font-size: 24px;
+}
+
+.userInfo {
+    display: flex;
+    gap: 4px;
+}
+
+.logout {
+    font-size: 14px;
+    color: maroon;
+    cursor: pointer;
+}

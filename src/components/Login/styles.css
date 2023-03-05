@@ -24,4 +24,20 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
+    gap: 16px;
+}
+
+.signup {
+    color: #2962ef;
+    cursor: pointer;
+    margin-left: 4px;
+}
+
+.signupText {
+    font-size: 14px;
+}
+
+.errorText {
+    font-size: 14px;
+    color: red;
 }
