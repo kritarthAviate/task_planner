@@ -34,6 +34,11 @@
     gap: 8px;
 }
 
+.button {
+    display: flex;
+    align-items: center;
+}
+
 .button svg:hover {
     cursor: pointer;
     fill: aquamarine;
@@ -41,9 +46,31 @@
 
 .button-disabled {
     fill: lightgrey;
+    display: flex;
+    align-items: center;
+}
+
+.delete-button {
+    display: flex;
+    align-items: center;
 }
 
 .delete-button svg:hover {
     cursor: pointer;
     fill: red;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.input {
+    cursor: pointer;
+}
+
+.button-ok {
+    cursor: pointer;
 }
