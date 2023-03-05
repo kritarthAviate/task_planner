@@ -51,8 +51,13 @@ const TaskRow = ({
                             value={currentTask.value}
                             onChange={e => handleChangeValue(index, e.target.value)}
                             autoFocus
+                            placeholder="Enter description..."
                         />
-                        <button className="button-ok" onClick={() => setOpenInput(false)}>
+                        <button
+                            className="button-ok"
+                            onClick={() => setOpenInput(false)}
+                            disabled={!currentTask?.value?.length}
+                        >
                             Ok
                         </button>
                     </form>

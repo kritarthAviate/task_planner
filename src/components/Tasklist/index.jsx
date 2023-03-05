@@ -54,7 +54,7 @@ const Tasklist = ({ profile }) => {
     const handleAddTask = () => {
         const arr = [...tasks];
         const lastNestingValue = tasks.at(-1)?.nestingValue ?? 0;
-        arr.push({ value: "newValue", nestingValue: lastNestingValue, openInput: true });
+        arr.push({ value: "", nestingValue: lastNestingValue, openInput: true });
         setTasks(arr);
     };
 
@@ -93,7 +93,7 @@ const Tasklist = ({ profile }) => {
                 </div>
             </div>
             <div className="tableHeader">
-                <span>Actions</span>
+                <span className="actions">Actions</span>
                 <span>Description(click to edit)</span>
             </div>
             <TableBodySortable onSortEnd={handleSortEnd} useDragHandle>

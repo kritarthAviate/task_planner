@@ -32,6 +32,8 @@
 .actions {
     display: flex;
     gap: 8px;
+    width: 96px;
+    justify-content: center;
 }
 
 .button {
