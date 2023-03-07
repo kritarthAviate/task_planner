@@ -2,10 +2,8 @@ import { useState } from "react";
 import "./styles.css";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
-import { useCookies } from "react-cookie";
 
 const Login = ({ setProfile }) => {
-    const [, setCookies] = useCookies();
     const [openEmailSignIn, setOpenEmailSignIn] = useState(false);
     const [openSignUpForm, setOpenSignUpForm] = useState(false);
     const [password, setPassword] = useState("");
@@ -13,6 +11,9 @@ const Login = ({ setProfile }) => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [error, setError] = useState("");
+
+    // eslint-disable-next-line no-undef
+    const backendUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:8080";
 
     const handleSubmit = e => {
         e.preventDefault();
@@ -42,14 +43,19 @@ const Login = ({ setProfile }) => {
 
     const handleLogin = async ({ email, password, googleAccessToken }) => {
         try {
-            const response = await axios.post("http://localhost:8080/user/signin", {
-                email,
-                password,
-                googleAccessToken,
-            });
+            const response = await axios.post(
+                `${backendUrl}/user/signin`,
+                {
+                    email,
+                    password,
+                    googleAccessToken,
+                },
+                {
+                    withCredentials: true,
+                },
+            );
 
             setProfile(response.data.result);
-            setCookies("authToken", response.data.token);
         } catch (error) {
             setError(error.response.data.message);
         }
@@ -58,14 +64,19 @@ const Login = ({ setProfile }) => {
     const handleSignUp = async event => {
         event.preventDefault();
         try {
-            const res = await axios.post("http://localhost:8080/user/signup", {
-                firstName,
-                lastName,
-                email,
-                password,
-            });
+            const res = await axios.post(
+                `${backendUrl}/user/signup`,
+                {
+                    firstName,
+                    lastName,
+                    email,
+                    password,
+                },
+                {
+                    withCredentials: true,
+                },
+            );
             setProfile(res.data.result);
-            setCookies("authToken", res.data.token);
         } catch (error) {
             setError(error.response.data.message);
         }

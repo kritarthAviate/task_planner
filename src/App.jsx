@@ -10,10 +10,13 @@ function App() {
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                const res = await axios.get("http://localhost:8080/user/me", {
+                // eslint-disable-next-line no-undef
+                const backendUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:8080";
+                const res = await axios(`${backendUrl}/user/me`, {
+                    method: "GET",
                     withCredentials: true,
                 });
-                setProfile(res.data.result);
+                setProfile(res?.data?.result);
             } catch (error) {
                 console.log({ error });
             }

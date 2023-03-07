@@ -64,8 +64,10 @@ const Tasklist = ({ profile }) => {
 
     const handleSaveClick = async () => {
         try {
+            // eslint-disable-next-line no-undef
+            const backendUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:8080";
             await axios.post(
-                "http://localhost:8080/task/saveTasks",
+                `${backendUrl}/task/saveTasks`,
                 {
                     tasks,
                 },
