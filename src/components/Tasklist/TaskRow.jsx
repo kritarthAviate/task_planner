@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ArrowLeftIcon, ArrowRightIcon, DeleteIcon, DragIcon } from "../../icons";
 import { SortableHandle } from "react-sortable-hoc";
+import { getColor } from "../../utils";
 
 const TaskRow = ({
     index,
@@ -43,7 +44,16 @@ const TaskRow = ({
                     <DeleteIcon size="18px" />
                 </div>
             </div>
-            <div className="value" style={{ marginLeft: `${currentTask.nestingValue * 30}px` }}>
+            <div
+                className="value"
+                style={{
+                    marginLeft: `${currentTask.nestingValue * 30}px`,
+                    borderLeft: `3px solid ${getColor(currentTask.nestingValue)}`,
+                    display: "flex",
+                    alignItems: "center",
+                    height: "100%",
+                }}
+            >
                 {openInput ? (
                     <form className="input-wrapper">
                         <input
@@ -62,7 +72,13 @@ const TaskRow = ({
                         </button>
                     </form>
                 ) : (
-                    <div className="input" onClick={() => setOpenInput(true)}>
+                    <div
+                        className="input"
+                        style={{
+                            color: `${getColor(currentTask.nestingValue)}`,
+                        }}
+                        onClick={() => setOpenInput(true)}
+                    >
                         {currentTask.value}
                     </div>
                 )}

@@ -24,8 +24,10 @@
 .row {
     border: 1px solid lightgrey;
     border-top: none;
-    padding: 20px 12px;
+    padding: 0px 12px;
+    height: 60px;
     display: flex;
+    align-items: center;
     gap: 80px;
 }
 
@@ -67,10 +69,12 @@
 .input-wrapper {
     display: flex;
     align-items: center;
+    margin-left: 10px;
 }
 
 .input {
     cursor: pointer;
+    margin-left: 10px;
 }
 
 .button-ok {
