@@ -32,6 +32,13 @@
 .actions {
     display: flex;
     gap: 8px;
+    width: 96px;
+    justify-content: center;
+}
+
+.button {
+    display: flex;
+    align-items: center;
 }
 
 .button svg:hover {
@@ -41,9 +48,31 @@
 
 .button-disabled {
     fill: lightgrey;
+    display: flex;
+    align-items: center;
+}
+
+.delete-button {
+    display: flex;
+    align-items: center;
 }
 
 .delete-button svg:hover {
     cursor: pointer;
     fill: red;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.input {
+    cursor: pointer;
+}
+
+.button-ok {
+    cursor: pointer;
 }

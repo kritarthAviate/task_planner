@@ -1,15 +1,32 @@
-import React from "react";
-import { ArrowLeftIcon, ArrowRightIcon, DeleteIcon } from "../../icons";
+import React, { useState } from "react";
+import { ArrowLeftIcon, ArrowRightIcon, DeleteIcon, DragIcon } from "../../icons";
+import { SortableHandle } from "react-sortable-hoc";
 
-const TaskRow = ({ index, tasks, handleDeleteTask, handleRightIndent, handleLeftIndent }) => {
+const TaskRow = ({
+    index,
+    tasks,
+    handleDeleteTask,
+    handleRightIndent,
+    handleLeftIndent,
+    handleChangeValue,
+}) => {
     const currentTask = tasks[index];
+    const [openInput, setOpenInput] = useState(currentTask?.openInput ?? false);
     const previousTask = tasks[index - 1];
     const disableIndentRight =
         currentTask.nestingValue - previousTask?.nestingValue >= 1 || index == 0;
     const disableIndentLeft = currentTask.nestingValue == 0;
+
+    const DragHandle = SortableHandle(() => (
+        <div className="button">
+            <DragIcon size="18px" />
+        </div>
+    ));
+
     return (
         <div className="row">
             <div className="actions">
+                <DragHandle />
                 <div
                     className={disableIndentLeft ? "button-disabled" : "button"}
                     onClick={() => !disableIndentLeft && handleLeftIndent(index)}
@@ -27,7 +44,28 @@ const TaskRow = ({ index, tasks, handleDeleteTask, handleRightIndent, handleLeft
                 </div>
             </div>
             <div className="value" style={{ marginLeft: `${currentTask.nestingValue * 30}px` }}>
-                {currentTask.value}
+                {openInput ? (
+                    <form className="input-wrapper">
+                        <input
+                            type="text"
+                            value={currentTask.value}
+                            onChange={e => handleChangeValue(index, e.target.value)}
+                            autoFocus
+                            placeholder="Enter description..."
+                        />
+                        <button
+                            className="button-ok"
+                            onClick={() => setOpenInput(false)}
+                            disabled={!currentTask?.value?.length}
+                        >
+                            Ok
+                        </button>
+                    </form>
+                ) : (
+                    <div className="input" onClick={() => setOpenInput(true)}>
+                        {currentTask.value}
+                    </div>
+                )}
             </div>
         </div>
     );

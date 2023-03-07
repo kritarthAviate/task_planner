@@ -5,7 +5,7 @@ import App from "./App";
 import "./index.css";
 import { CookiesProvider } from "react-cookie";
 
-const clientId = process.env.REACT_APP_OAuth_ClientID;
+const clientId = process.env.REACT_APP_OAUTH_CLIENTID;
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

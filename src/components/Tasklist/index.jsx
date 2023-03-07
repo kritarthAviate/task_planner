@@ -4,6 +4,8 @@ import { defaultTasks } from "../../test";
 import TaskRow from "./TaskRow";
 import axios from "axios";
 
+import { SortableContainer, SortableElement } from "react-sortable-hoc";
+
 const Tasklist = ({ profile }) => {
     const [tasks, setTasks] = useState(() =>
         profile?.tasks?.length ? profile?.tasks : defaultTasks?.length ? defaultTasks : [],
@@ -43,10 +45,16 @@ const Tasklist = ({ profile }) => {
         setTasks(arr);
     };
 
+    const handleChangeValue = (index, newValue) => {
+        const arr = [...tasks];
+        arr[index].value = newValue;
+        setTasks(arr);
+    };
+
     const handleAddTask = () => {
         const arr = [...tasks];
         const lastNestingValue = tasks.at(-1)?.nestingValue ?? 0;
-        arr.push({ value: "newValue", nestingValue: lastNestingValue });
+        arr.push({ value: "", nestingValue: lastNestingValue, openInput: true });
         setTasks(arr);
     };
 
@@ -56,17 +64,25 @@ const Tasklist = ({ profile }) => {
 
     const handleSaveClick = async () => {
         try {
-            const response = await axios.post(
-                "http://localhost:8080/task/saveTasks",
+            // eslint-disable-next-line no-undef
+            const backendUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:8080";
+            await axios.post(
+                `${backendUrl}/task/saveTasks`,
                 {
                     tasks,
                 },
                 { withCredentials: true },
             );
-            console.log({ response });
         } catch (error) {
             console.log({ error });
         }
+    };
+
+    const handleSortEnd = ({ oldIndex, newIndex }) => {
+        const array = [...tasks];
+        const [item] = array.splice(oldIndex, 1);
+        array.splice(newIndex, 0, item);
+        setTasks(array);
     };
 
     return (
@@ -79,24 +95,53 @@ const Tasklist = ({ profile }) => {
                 </div>
             </div>
             <div className="tableHeader">
-                <span>Actions</span>
-                <span>Description</span>
+                <span className="actions">Actions</span>
+                <span>Description(click to edit)</span>
             </div>
-            <div className="rows">
+            <TableBodySortable onSortEnd={handleSortEnd} useDragHandle>
                 {tasks.map((task, i) => (
-                    <TaskRow
+                    <TaskRowSortable
                         key={i}
                         index={i}
+                        taskIndex={i}
                         tasks={tasks}
                         handleDeleteTask={handleDeleteTask}
                         handleRightIndent={handleRightIndent}
                         handleLeftIndent={handleLeftIndent}
+                        handleChangeValue={handleChangeValue}
                     />
                 ))}
-            </div>
+            </TableBodySortable>
             <button onClick={handleAddTask}>Add task</button>
         </div>
     );
 };
+
+const TaskRowSortable = SortableElement(
+    ({
+        tasks,
+        handleDeleteTask,
+        handleLeftIndent,
+        handleRightIndent,
+        handleChangeValue,
+        taskIndex,
+    }) => {
+        return (
+            <TaskRow
+                key={taskIndex}
+                index={taskIndex}
+                tasks={tasks}
+                handleDeleteTask={handleDeleteTask}
+                handleRightIndent={handleRightIndent}
+                handleLeftIndent={handleLeftIndent}
+                handleChangeValue={handleChangeValue}
+            />
+        );
+    },
+);
+
+const TableBodySortable = SortableContainer(({ children }) => (
+    <div className="rows">{children}</div>
+));
 
 export default Tasklist;
