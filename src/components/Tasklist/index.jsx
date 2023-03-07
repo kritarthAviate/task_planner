@@ -80,8 +80,18 @@ const Tasklist = ({ profile }) => {
 
     const handleSortEnd = ({ oldIndex, newIndex }) => {
         const array = [...tasks];
-        const [item] = array.splice(oldIndex, 1);
-        array.splice(newIndex, 0, item);
+        const changeInIndex = newIndex - oldIndex;
+        const prevIndexNestedValue = array[newIndex - 1]?.nestingValue ?? 0;
+        const oldIndexNestedValue = array[oldIndex].nestingValue;
+        if (oldIndexNestedValue - prevIndexNestedValue > 1) return;
+        let count = 1;
+        for (let i = oldIndex + 1; i < array.length; i++) {
+            if (array[i].nestingValue <= array[oldIndex].nestingValue) break;
+            count++;
+        }
+        if (changeInIndex > 0 && changeInIndex < count) return;
+        const item = array.splice(oldIndex, count);
+        array.splice(newIndex, 0, ...item);
         setTasks(array);
     };
 
