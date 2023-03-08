@@ -72,9 +72,24 @@
     margin-left: 10px;
 }
 
+.input-wrapper input {
+    height: 25px;
+    border: none;
+    border-bottom: 1px lightgrey solid;
+    width: 250px;
+}
+
+.input-wrapper input:focus {
+    height: 25px;
+    outline: none;
+    border-bottom: 1px blue solid;
+    width: 250px;
+}
+
 .input {
     cursor: pointer;
     margin-left: 10px;
+    min-width: 20px;
 }
 
 .button-ok {

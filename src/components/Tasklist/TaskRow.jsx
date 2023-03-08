@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { ArrowLeftIcon, ArrowRightIcon, DeleteIcon, DragIcon } from "../../icons";
 import { SortableHandle } from "react-sortable-hoc";
 import { getColor } from "../../utils";
@@ -11,12 +11,25 @@ const TaskRow = ({
     handleLeftIndent,
     handleChangeValue,
 }) => {
+    const formRef = useRef(null);
     const currentTask = tasks[index];
     const [openInput, setOpenInput] = useState(currentTask?.openInput ?? false);
     const previousTask = tasks[index - 1];
     const disableIndentRight =
         currentTask.nestingValue - previousTask?.nestingValue >= 1 || index == 0;
     const disableIndentLeft = currentTask.nestingValue == 0;
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (formRef.current && !formRef.current.contains(event.target)) {
+                setOpenInput(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [formRef]);
 
     const DragHandle = SortableHandle(() => (
         <div className="button">
@@ -55,7 +68,11 @@ const TaskRow = ({
                 }}
             >
                 {openInput ? (
-                    <form className="input-wrapper">
+                    <form
+                        className="input-wrapper"
+                        onSubmit={() => setOpenInput(false)}
+                        ref={formRef}
+                    >
                         <input
                             type="text"
                             value={currentTask.value}
@@ -63,13 +80,6 @@ const TaskRow = ({
                             autoFocus
                             placeholder="Enter description..."
                         />
-                        <button
-                            className="button-ok"
-                            onClick={() => setOpenInput(false)}
-                            disabled={!currentTask?.value?.length}
-                        >
-                            Ok
-                        </button>
                     </form>
                 ) : (
                     <div
@@ -79,7 +89,7 @@ const TaskRow = ({
                         }}
                         onClick={() => setOpenInput(true)}
                     >
-                        {currentTask.value}
+                        {currentTask?.value || "Enter description..."}
                     </div>
                 )}
             </div>
