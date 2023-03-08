@@ -112,8 +112,12 @@ const Login = ({ setProfile }) => {
                     </div>
                     {!!error && <span className="errorText">{error}</span>}
                     <div className="buttonWrapper">
-                        <button type="submit">Login</button>
-                        <button onClick={handleClose}>Cancel</button>
+                        <button className="textButton" type="submit">
+                            Login
+                        </button>
+                        <button className="textButton" onClick={handleClose}>
+                            Cancel
+                        </button>
                     </div>
                 </form>
             ) : openSignUpForm ? (
@@ -164,14 +168,22 @@ const Login = ({ setProfile }) => {
                     </div>
                     {!!error && <span className="errorText">{error}</span>}
                     <div className="buttonWrapper">
-                        <button type="submit">SignUp</button>
-                        <button onClick={handleClose}>Cancel</button>
+                        <button className="textButton" type="submit">
+                            SignUp
+                        </button>
+                        <button className="textButton" onClick={handleClose}>
+                            Cancel
+                        </button>
                     </div>
                 </form>
             ) : (
                 <>
-                    <button onClick={() => setOpenEmailSignIn(true)}>Sign in with Email 📧 </button>
-                    <button onClick={() => googleLogin()}>Continue with Google 🚀 </button>
+                    <button className="loginButton" onClick={() => setOpenEmailSignIn(true)}>
+                        Sign in with Email 📧
+                    </button>
+                    <button className="loginButton" onClick={() => googleLogin()}>
+                        Continue with Google 🚀
+                    </button>
                     <span className="signupText">
                         Not a user?
                         <span className="signup" onClick={() => setOpenSignUpForm(true)}>

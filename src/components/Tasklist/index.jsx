@@ -3,7 +3,6 @@ import "./styles.css";
 import { defaultTasks } from "../../test";
 import TaskRow from "./TaskRow";
 import axios from "axios";
-import { v4 } from "uuid";
 
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 
@@ -121,6 +120,8 @@ const Tasklist = ({ profile }) => {
             <div className="tableTitle">
                 <span>List of tasks</span>
                 <div className="buttonGroup">
+                    <button className="textButton">Import</button>
+                    <button className="textButton">Export</button>
                     <button className="textButton" onClick={handleSaveClick}>
                         {loadingSave ? "Loading..." : "Save"}
                     </button>

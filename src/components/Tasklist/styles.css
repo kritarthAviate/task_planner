@@ -5,6 +5,7 @@
 .tableTitle {
     font-size: 20px;
     display: flex;
+    align-items: center;
     justify-content: space-between;
 }
 
@@ -94,4 +95,24 @@
 
 .button-ok {
     cursor: pointer;
+}
+
+.buttonGroup {
+    display: flex;
+}
+
+.textButton {
+    cursor: pointer;
+    background-color: rgb(29, 105, 191);
+    height: 30px;
+    width: 100px;
+    padding: 5px;
+    margin: 5px;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border: none;
+    font-size: 16px;
 }

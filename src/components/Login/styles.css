@@ -41,3 +41,34 @@
     font-size: 14px;
     color: red;
 }
+
+.textButton {
+    cursor: pointer;
+    background-color: rgb(29, 105, 191);
+    height: 30px;
+    width: 100px;
+    padding: 5px;
+    margin: 5px;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border: none;
+    font-size: 16px;
+}
+
+.loginButton {
+    cursor: pointer;
+    background-color: rgb(29, 105, 191);
+    width: 200px;
+    padding: 5px;
+    margin: 5px;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border: none;
+    font-size: 16px;
+}
