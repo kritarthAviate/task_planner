@@ -3,6 +3,7 @@ import "./styles.css";
 import { defaultTasks } from "../../test";
 import TaskRow from "./TaskRow";
 import axios from "axios";
+import { v4 } from "uuid";
 
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 
@@ -54,7 +55,7 @@ const Tasklist = ({ profile }) => {
     const handleAddTask = () => {
         const arr = [...tasks];
         const lastNestingValue = tasks.at(-1)?.nestingValue ?? 0;
-        arr.push({ value: "", nestingValue: lastNestingValue, openInput: true });
+        arr.push({ value: "", nestingValue: lastNestingValue, openInput: true, id: v4() });
         setTasks(arr);
     };
 
@@ -111,7 +112,7 @@ const Tasklist = ({ profile }) => {
             <TableBodySortable onSortEnd={handleSortEnd} useDragHandle>
                 {tasks.map((task, i) => (
                     <TaskRowSortable
-                        key={i}
+                        key={task.id}
                         index={i}
                         taskIndex={i}
                         tasks={tasks}
