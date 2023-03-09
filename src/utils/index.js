@@ -52,3 +52,34 @@ const ColorMap = [
 ];
 
 export const getColor = index => ColorMap[index % 50];
+
+export const handleExport = async (data, fileName) => {
+    const json = JSON.stringify(data);
+    const blob = new Blob([json], { type: "application/json" });
+    const href = await URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = href;
+    link.download = fileName + ".json";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
+
+export const validateImportedTasks = tasks => {
+    if (!Array.isArray(tasks)) {
+        console.log("array");
+        return false;
+    }
+    if (tasks[0]?.nestingValue !== 0) {
+        console.log("firstvalue");
+        return false;
+    }
+    return tasks.every((task, i, array) => {
+        if (i == array.length - 1) {
+            return true;
+        }
+        if (array[i + 1].nestingValue - 1 - task.nestingValue <= 1) {
+            return true;
+        }
+    });
+};

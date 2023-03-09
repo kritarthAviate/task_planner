@@ -99,15 +99,19 @@
 
 .buttonGroup {
     display: flex;
+    height: 100%;
+}
+
+input[type="file"] {
+    display: none;
 }
 
 .textButton {
     cursor: pointer;
     background-color: rgb(29, 105, 191);
-    height: 30px;
+    height: 100%;
     width: 100px;
     padding: 5px;
-    margin: 5px;
     border-radius: 3px;
     display: flex;
     justify-content: center;

@@ -3,6 +3,7 @@ import "./styles.css";
 import { defaultTasks } from "../../test";
 import TaskRow from "./TaskRow";
 import axios from "axios";
+import { handleExport, validateImportedTasks } from "../../utils";
 
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 
@@ -115,13 +116,37 @@ const Tasklist = ({ profile }) => {
         setTasks(array);
     };
 
+    const handleImport = event => {
+        const fileReader = new FileReader();
+        fileReader.readAsText(event.target.files[0], "UTF-8");
+        fileReader.onload = e => {
+            const importedTasks = JSON.parse(e.target.result);
+            if (!validateImportedTasks(importedTasks)) {
+                return alert("Invalid JSON!");
+            }
+            setTasks(importedTasks);
+        };
+    };
+
     return (
         <div className="container">
             <div className="tableTitle">
                 <span>List of tasks</span>
                 <div className="buttonGroup">
-                    <button className="textButton">Import</button>
-                    <button className="textButton">Export</button>
+                    <>
+                        <label htmlFor="file-upload" className="textButton">
+                            Import
+                        </label>
+                        <input
+                            onChange={handleImport}
+                            id="file-upload"
+                            type="file"
+                            accept="application/json"
+                        />
+                    </>
+                    <button className="textButton" onClick={() => handleExport(tasks, "tasks")}>
+                        Export
+                    </button>
                     <button className="textButton" onClick={handleSaveClick}>
                         {loadingSave ? "Loading..." : "Save"}
                     </button>
