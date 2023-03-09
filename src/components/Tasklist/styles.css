@@ -5,6 +5,7 @@
 .tableTitle {
     font-size: 20px;
     display: flex;
+    align-items: center;
     justify-content: space-between;
 }
 
@@ -72,11 +73,50 @@
     margin-left: 10px;
 }
 
+.input-wrapper input {
+    height: 25px;
+    border: none;
+    border-bottom: 1px lightgrey solid;
+    width: 250px;
+}
+
+.input-wrapper input:focus {
+    height: 25px;
+    outline: none;
+    border-bottom: 1px blue solid;
+    width: 250px;
+}
+
 .input {
     cursor: pointer;
     margin-left: 10px;
+    min-width: 20px;
 }
 
 .button-ok {
     cursor: pointer;
+}
+
+.buttonGroup {
+    display: flex;
+    height: 100%;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.textButton {
+    cursor: pointer;
+    background-color: rgb(29, 105, 191);
+    height: 100%;
+    width: 100px;
+    padding: 5px;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border: none;
+    font-size: 16px;
 }

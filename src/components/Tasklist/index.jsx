@@ -3,6 +3,7 @@ import "./styles.css";
 import { defaultTasks } from "../../test";
 import TaskRow from "./TaskRow";
 import axios from "axios";
+import { handleExport, validateImportedTasks } from "../../utils";
 
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 
@@ -10,6 +11,7 @@ const Tasklist = ({ profile }) => {
     const [tasks, setTasks] = useState(() =>
         profile?.tasks?.length ? profile?.tasks : defaultTasks?.length ? defaultTasks : [],
     );
+    const [loadingSave, setLoadingSave] = useState(false);
 
     const handleDeleteTask = index => {
         const arr = [...tasks];
@@ -64,6 +66,7 @@ const Tasklist = ({ profile }) => {
 
     const handleSaveClick = async () => {
         try {
+            setLoadingSave(true);
             // eslint-disable-next-line no-undef
             const backendUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:8080";
             await axios.post(
@@ -75,24 +78,54 @@ const Tasklist = ({ profile }) => {
             );
         } catch (error) {
             console.log({ error });
+        } finally {
+            setLoadingSave(false);
         }
     };
 
     const handleSortEnd = ({ oldIndex, newIndex }) => {
+        if (oldIndex == null || newIndex == null) {
+            console.log("Invalid indexes");
+            return;
+        }
         const array = [...tasks];
         const changeInIndex = newIndex - oldIndex;
         const prevIndexNestedValue = array[newIndex - 1]?.nestingValue ?? 0;
         const oldIndexNestedValue = array[oldIndex].nestingValue;
-        if (oldIndexNestedValue - prevIndexNestedValue > 1) return;
+        if (newIndex == 0 && oldIndexNestedValue != 0) {
+            console.log(
+                "Illegal move, can't have nesting value of anything other than 0 on the first task.",
+            );
+            return;
+        }
+        if (oldIndexNestedValue - prevIndexNestedValue > 1) {
+            console.log("Illegal move");
+            return;
+        }
         let count = 1;
         for (let i = oldIndex + 1; i < array.length; i++) {
             if (array[i].nestingValue <= array[oldIndex].nestingValue) break;
             count++;
         }
-        if (changeInIndex > 0 && changeInIndex < count) return;
+        if (changeInIndex > 0 && changeInIndex < count) {
+            console.log("Can't move inside child");
+            return;
+        }
         const item = array.splice(oldIndex, count);
         array.splice(newIndex, 0, ...item);
         setTasks(array);
+    };
+
+    const handleImport = event => {
+        const fileReader = new FileReader();
+        fileReader.readAsText(event.target.files[0], "UTF-8");
+        fileReader.onload = e => {
+            const importedTasks = JSON.parse(e.target.result);
+            if (!validateImportedTasks(importedTasks)) {
+                return alert("Invalid JSON!");
+            }
+            setTasks(importedTasks);
+        };
     };
 
     return (
@@ -100,8 +133,26 @@ const Tasklist = ({ profile }) => {
             <div className="tableTitle">
                 <span>List of tasks</span>
                 <div className="buttonGroup">
-                    <button onClick={handleSaveClick}>Save</button>
-                    <button onClick={handleClearClick}>Clear</button>
+                    <>
+                        <label htmlFor="file-upload" className="textButton">
+                            Import
+                        </label>
+                        <input
+                            onChange={handleImport}
+                            id="file-upload"
+                            type="file"
+                            accept="application/json"
+                        />
+                    </>
+                    <button className="textButton" onClick={() => handleExport(tasks, "tasks")}>
+                        Export
+                    </button>
+                    <button className="textButton" onClick={handleSaveClick}>
+                        {loadingSave ? "Loading..." : "Save"}
+                    </button>
+                    <button className="textButton" onClick={handleClearClick}>
+                        Clear
+                    </button>
                 </div>
             </div>
             <div className="tableHeader">
@@ -109,20 +160,24 @@ const Tasklist = ({ profile }) => {
                 <span>Description(click to edit)</span>
             </div>
             <TableBodySortable onSortEnd={handleSortEnd} useDragHandle>
-                {tasks.map((task, i) => (
-                    <TaskRowSortable
-                        key={i}
-                        index={i}
-                        taskIndex={i}
-                        tasks={tasks}
-                        handleDeleteTask={handleDeleteTask}
-                        handleRightIndent={handleRightIndent}
-                        handleLeftIndent={handleLeftIndent}
-                        handleChangeValue={handleChangeValue}
-                    />
-                ))}
+                {tasks.map((task, i) => {
+                    return (
+                        <TaskRowSortable
+                            key={`item-${i}`}
+                            index={i}
+                            taskIndex={i}
+                            tasks={tasks}
+                            handleDeleteTask={handleDeleteTask}
+                            handleRightIndent={handleRightIndent}
+                            handleLeftIndent={handleLeftIndent}
+                            handleChangeValue={handleChangeValue}
+                        />
+                    );
+                })}
             </TableBodySortable>
-            <button onClick={handleAddTask}>Add task</button>
+            <button className="textButton" onClick={handleAddTask}>
+                Add task
+            </button>
         </div>
     );
 };
